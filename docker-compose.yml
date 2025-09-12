@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:17
+    container_name: kanban-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: kanban
+      POSTGRES_PASSWORD: kanban123
+      POSTGRES_DB: kanban.db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+    driver: local
