@@ -50,7 +50,7 @@ public class TarefaService {
     }
 
     public List<Tarefa> listarPorProjeto(Long projetoId){
-        return tarefaRepository.findByProjetoIdAndStatusNot(projetoId, Status.ARCHIVED);
+        return tarefaRepository.findByProjetoIdAndStatusNotOrderByAtualizadoEmDesc(projetoId, Status.ARCHIVED);
     }
 
     public Tarefa atualizarTarefa(@PathVariable Long id, AtualizarTarefaRequest dto){
@@ -92,5 +92,12 @@ public class TarefaService {
                 .orElseThrow(() -> new EntityNotFoundException("Tarefa com o ID " + id + " não existe."));
         tarefa.setStatus(Status.ARCHIVED);
         tarefaRepository.save(tarefa);
+    }
+
+    public List<Tarefa> pesquisar(Long projetoId, String termo){
+        if(termo == null || termo.isBlank()){
+            return listarPorProjeto(projetoId);
+        }
+        return tarefaRepository.pesquisar(projetoId, termo);
     }
 }

@@ -48,4 +48,12 @@ public class TarefaController {
         tarefaService.arquivarTarefa(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/pesquisar")
+    public ResponseEntity<List<Tarefa>> pesquisarTarefas(
+            @RequestParam Long projetoId,
+            @RequestParam String termo ){
+        List<Tarefa> tarefasEncontradas = tarefaService.pesquisar(projetoId, termo);
+        return ResponseEntity.ok(tarefasEncontradas);
+    }
 }
