@@ -34,5 +34,4 @@ public interface TarefaRepository extends JpaRepository<Tarefa,Long> {
             @Param("projetoId") Long projetoId,
             @Param("status") Status status
     );
-
 }

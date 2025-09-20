@@ -10,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -43,9 +44,9 @@ public class Tarefa {
 
     @Column(nullable = false)
     @CreationTimestamp
-    private LocalDate criadoEm;
+    private LocalDateTime criadoEm;
 
     @Column(nullable = false)
     @UpdateTimestamp
-    private LocalDate atualizadoEm;
+    private LocalDateTime atualizadoEm;
 }
