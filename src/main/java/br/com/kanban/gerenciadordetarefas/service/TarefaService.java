@@ -57,11 +57,11 @@ public class TarefaService {
         Tarefa tarefa = tarefaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Tarefa com o ID " + id + " não existe."));
 
-        if(dto.status() == Status.DONE && (tarefa.getDescricao() == null || tarefa.getDescricao().isBlank())){
+        if(tarefa.getStatus() == Status.DONE && (tarefa.getDescricao() == null) || tarefa.getDescricao().isBlank()) {
             throw new IllegalArgumentException("Não é possível mover a tarefa para 'DONE' sem uma descrição.");
         }
 
-        if(dto.status() == Status.DOING) {
+        if(dto.status() == Status.DOING){
             long tarefasEmDoing = tarefaRepository.countByProjetoAndStatus(tarefa.getProjeto(), Status.DOING);
             if(tarefasEmDoing >= LIMITE_WIP_POR_PROJETO){
                 throw new IllegalArgumentException("Limite de tarefas em 'DOING' atingido para o projeto.");

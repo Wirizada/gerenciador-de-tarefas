@@ -44,6 +44,5 @@ public class MetricasService {
         long horas = duration.toHoursPart();
         long minutos = duration.toMinutesPart();
         return String.format("%d dias, %d horas, %d minutos", dias, horas, minutos);
-
     }
 }
