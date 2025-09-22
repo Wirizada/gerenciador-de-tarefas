@@ -15,9 +15,11 @@ import java.util.Date;
 
 @Entity
 @Table(name = "tarefas")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Tarefa {
 
     @Id

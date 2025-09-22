@@ -5,9 +5,11 @@ import lombok.*;
 
 @Entity
 @Table(name = "projetos")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Projeto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

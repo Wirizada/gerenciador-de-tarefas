@@ -14,4 +14,4 @@ public record CriarTarefaRequest(
         @Size(max = 2000, message = "A descrição pode ter no máximo 2000 caracteres.")
         String descricao,
         Prioridade prioridade
-) {}
+){}

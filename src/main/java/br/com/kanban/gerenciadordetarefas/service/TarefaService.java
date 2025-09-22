@@ -2,6 +2,7 @@ package br.com.kanban.gerenciadordetarefas.service;
 
 import br.com.kanban.gerenciadordetarefas.dto.AtualizarTarefaRequest;
 import br.com.kanban.gerenciadordetarefas.dto.CriarTarefaRequest;
+import br.com.kanban.gerenciadordetarefas.exception.BusinessRuleException;
 import br.com.kanban.gerenciadordetarefas.model.Projeto;
 import br.com.kanban.gerenciadordetarefas.model.Tarefa;
 import br.com.kanban.gerenciadordetarefas.model.enums.Prioridade;
@@ -57,14 +58,10 @@ public class TarefaService {
         Tarefa tarefa = tarefaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Tarefa com o ID " + id + " não existe."));
 
-        if(dto.status() == Status.DONE && (tarefa.getDescricao() == null || tarefa.getDescricao().isBlank())){
-            throw new IllegalArgumentException("Não é possível mover a tarefa para 'DONE' sem uma descrição.");
-        }
-
-        if(dto.status() == Status.DOING) {
+        if(dto.status() == Status.DOING){
             long tarefasEmDoing = tarefaRepository.countByProjetoAndStatus(tarefa.getProjeto(), Status.DOING);
             if(tarefasEmDoing >= LIMITE_WIP_POR_PROJETO){
-                throw new IllegalArgumentException("Limite de tarefas em 'DOING' atingido para o projeto.");
+                throw new BusinessRuleException("Limite de tarefas em 'DOING' atingido para o projeto.");
             }
         }
 
@@ -82,6 +79,10 @@ public class TarefaService {
 
         if(dto.prioridade() != null){
             tarefa.setPrioridade(dto.prioridade());
+        }
+
+        if (dto.status() == Status.DONE && (tarefa.getDescricao() == null || tarefa.getDescricao().isBlank())) {
+            throw new BusinessRuleException("Não é possível mover a tarefa para 'DONE' sem uma descrição.");
         }
 
         return tarefaRepository.save(tarefa);
