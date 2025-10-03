@@ -51,7 +51,7 @@ public class TarefaService {
     }
 
     public List<Tarefa> listarPorProjeto(Long projetoId){
-        return tarefaRepository.findByProjetoIdAndStatusNotOrderByAtualizadoEmDesc(projetoId, Status.ARCHIVED);
+        return tarefaRepository.findAllActiveByProjectId(projetoId, Status.ARCHIVED);
     }
 
     public Tarefa atualizarTarefa(@PathVariable Long id, AtualizarTarefaRequest dto){
@@ -99,6 +99,6 @@ public class TarefaService {
         if(termo == null || termo.isBlank()){
             return listarPorProjeto(projetoId);
         }
-        return tarefaRepository.pesquisar(projetoId, termo);
+        return tarefaRepository.searchByTermInProject(projetoId, termo);
     }
 }

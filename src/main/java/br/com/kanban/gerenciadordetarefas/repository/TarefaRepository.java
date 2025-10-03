@@ -14,7 +14,11 @@ import java.util.List;
 public interface TarefaRepository extends JpaRepository<Tarefa,Long> {
     long countByProjetoAndStatus(Projeto projeto, Status status);
 
-    List<Tarefa> findByProjetoIdAndStatusNotOrderByAtualizadoEmDesc(Long projetoId, Status status);
+    @Query("SELECT t FROM Tarefa t WHERE t.projeto.id = :projetoId AND t.status != :status ORDER BY t.atualizadoEm DESC")
+    List<Tarefa> findAllActiveByProjectId(
+            @Param("projetoId") Long projetoId,
+            @Param("status") Status status
+    );
 
     @Query(
             "SELECT t FROM Tarefa t WHERE t.projeto.id = :projetoId AND t.status !='ARCHIVED' AND "+
@@ -22,7 +26,7 @@ public interface TarefaRepository extends JpaRepository<Tarefa,Long> {
             "LOWER(t.descricao) LIKE LOWER(CONCAT('%', :termo, '%')))"+
             "ORDER BY t.atualizadoEm DESC"
     )
-    List<Tarefa>pesquisar(
+    List<Tarefa> searchByTermInProject(
             @Param("projetoId")Long projetoId,
             @Param("termo")String termo
     );
@@ -30,7 +34,7 @@ public interface TarefaRepository extends JpaRepository<Tarefa,Long> {
     @Query(
             "SELECT t FROM Tarefa t WHERE t.projeto.id = :projetoId AND t.status = :status"
     )
-    List<Tarefa> findByProjetoIdAndStatus(
+    List<Tarefa> findByProjectIdAndStatus(
             @Param("projetoId") Long projetoId,
             @Param("status") Status status
     );
