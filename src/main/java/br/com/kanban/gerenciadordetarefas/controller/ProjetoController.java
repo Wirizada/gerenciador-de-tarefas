@@ -1,13 +1,14 @@
 package br.com.kanban.gerenciadordetarefas.controller;
 
 import br.com.kanban.gerenciadordetarefas.dto.CriarProjetoRequest;
+import br.com.kanban.gerenciadordetarefas.dto.ProjetoResponse;
 import br.com.kanban.gerenciadordetarefas.model.Projeto;
 import br.com.kanban.gerenciadordetarefas.service.ProjetoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -24,19 +25,33 @@ public class ProjetoController {
     }
 
     @PostMapping
-    public ResponseEntity<Projeto> criarProjeto(@Valid @RequestBody CriarProjetoRequest request) {
-        Projeto novoProjeto = new Projeto();
-        novoProjeto.setNome(request.nome());
+    public ResponseEntity<ProjetoResponse> criarProjeto(@Valid @RequestBody CriarProjetoRequest request) {
+        Projeto novoProjeto = Projeto.builder()
+                .nome(request.nome())
+                .build();
 
         Projeto projetoSalvo = projetoService.criarProjeto(novoProjeto);
 
-        URI location = URI.create(String.format("/projetos/" + projetoSalvo.getId()));
-        return ResponseEntity.created(location).body(projetoSalvo);
+        ProjetoResponse projetoResponse = new ProjetoResponse(
+                projetoSalvo.getId(),
+                projetoSalvo.getNome(),
+                projetoSalvo.isAtivo()
+        );
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(projetoResponse.id()).toUri();
+
+        return ResponseEntity.created(location).body(projetoResponse);
     }
 
     @GetMapping
-    public ResponseEntity<List<Projeto>> listarProjetos() {
+    public ResponseEntity<List<ProjetoResponse>> listarProjetos() {
         List<Projeto> projetos = projetoService.listarTodosProjetos();
-        return ResponseEntity.ok(projetos);
+
+        List<ProjetoResponse> projetoResponse = projetos.stream()
+                .map(projeto -> new ProjetoResponse(projeto.getId(), projeto.getNome(), projeto.isAtivo()))
+                .toList();
+
+        return ResponseEntity.ok(projetoResponse);
     }
 }
