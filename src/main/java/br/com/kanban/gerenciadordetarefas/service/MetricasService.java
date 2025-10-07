@@ -21,7 +21,7 @@ public class MetricasService {
     }
 
     public MetricaLeadTimeResponse calcularLeadTimeMedio(Long projetoId){
-        List<Tarefa> tarefasConcluidas = tarefaRepository.findByProjectIdAndStatus(projetoId, Status.DONE);
+        List<Tarefa> tarefasConcluidas = tarefaRepository.findByProjetoIdAndStatus(projetoId, Status.DONE);
 
         if(tarefasConcluidas.isEmpty()){
             return new MetricaLeadTimeResponse(0, "Nenhuma tarefa concluida");

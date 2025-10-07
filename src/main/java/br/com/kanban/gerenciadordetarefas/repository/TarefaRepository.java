@@ -15,7 +15,7 @@ public interface TarefaRepository extends JpaRepository<Tarefa,Long> {
     long countByProjetoAndStatus(Projeto projeto, Status status);
 
     @Query("SELECT t FROM Tarefa t WHERE t.projeto.id = :projetoId AND t.status != :status ORDER BY t.atualizadoEm DESC")
-    List<Tarefa> findAllActiveByProjectId(
+    List<Tarefa> findAllAtivasPorProjetoId(
             @Param("projetoId") Long projetoId,
             @Param("status") Status status
     );
@@ -24,13 +24,13 @@ public interface TarefaRepository extends JpaRepository<Tarefa,Long> {
             "(LOWER(t.titulo) LIKE LOWER(CONCAT('%', :termo, '%')) OR "+
             "LOWER(t.descricao) LIKE LOWER(CONCAT('%', :termo, '%')))"+
             "ORDER BY t.atualizadoEm DESC")
-    List<Tarefa> searchByTermInProject(
+    List<Tarefa> pesquisarPorTermoNoProjeto(
             @Param("projetoId")Long projetoId,
             @Param("termo")String termo
     );
 
     @Query("SELECT t FROM Tarefa t WHERE t.projeto.id = :projetoId AND t.status = :status")
-    List<Tarefa> findByProjectIdAndStatus(
+    List<Tarefa> findByProjetoIdAndStatus(
             @Param("projetoId") Long projetoId,
             @Param("status") Status status
     );

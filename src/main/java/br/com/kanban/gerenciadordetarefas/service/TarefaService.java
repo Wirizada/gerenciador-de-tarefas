@@ -51,19 +51,12 @@ public class TarefaService {
     }
 
     public List<Tarefa> listarPorProjeto(Long projetoId){
-        return tarefaRepository.findAllActiveByProjectId(projetoId, Status.ARCHIVED);
+        return tarefaRepository.findAllAtivasPorProjetoId(projetoId, Status.ARCHIVED);
     }
 
     public Tarefa atualizarTarefa(@PathVariable Long id, AtualizarTarefaRequest dto){
         Tarefa tarefa = tarefaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Tarefa com o ID " + id + " não existe."));
-
-        if(dto.status() == Status.DOING){
-            long tarefasEmDoing = tarefaRepository.countByProjetoAndStatus(tarefa.getProjeto(), Status.DOING);
-            if(tarefasEmDoing >= LIMITE_WIP_POR_PROJETO){
-                throw new BusinessRuleException("Limite de tarefas em 'DOING' atingido para o projeto.");
-            }
-        }
 
         if(dto.titulo() != null){
             tarefa.setTitulo(dto.titulo());
@@ -81,7 +74,14 @@ public class TarefaService {
             tarefa.setPrioridade(dto.prioridade());
         }
 
-        if (dto.status() == Status.DONE && (tarefa.getDescricao() == null || tarefa.getDescricao().isBlank())) {
+        if(tarefa.getStatus() == Status.DOING){
+            long tarefasEmDoing = tarefaRepository.countByProjetoAndStatus(tarefa.getProjeto(), Status.DOING);
+            if(tarefasEmDoing >= LIMITE_WIP_POR_PROJETO){
+                throw new BusinessRuleException("Limite de tarefas em 'DOING' atingido para o projeto.");
+            }
+        }
+
+        if (tarefa.getStatus() == Status.DONE && (tarefa.getDescricao() == null || tarefa.getDescricao().isBlank())) {
             throw new BusinessRuleException("Não é possível mover a tarefa para 'DONE' sem uma descrição.");
         }
 
@@ -99,6 +99,6 @@ public class TarefaService {
         if(termo == null || termo.isBlank()){
             return listarPorProjeto(projetoId);
         }
-        return tarefaRepository.searchByTermInProject(projetoId, termo);
+        return tarefaRepository.pesquisarPorTermoNoProjeto(projetoId, termo);
     }
 }
