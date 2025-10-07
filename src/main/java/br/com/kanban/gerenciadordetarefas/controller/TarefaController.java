@@ -2,12 +2,14 @@ package br.com.kanban.gerenciadordetarefas.controller;
 
 import br.com.kanban.gerenciadordetarefas.dto.AtualizarTarefaRequest;
 import br.com.kanban.gerenciadordetarefas.dto.CriarTarefaRequest;
+import br.com.kanban.gerenciadordetarefas.dto.TarefaResponse;
 import br.com.kanban.gerenciadordetarefas.model.Tarefa;
 import br.com.kanban.gerenciadordetarefas.service.TarefaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -24,23 +26,60 @@ public class TarefaController {
     }
 
     @PostMapping
-    public ResponseEntity<Tarefa> criarTarefa(@Valid @RequestBody CriarTarefaRequest request){
+    public ResponseEntity<TarefaResponse> criarTarefa(@Valid @RequestBody CriarTarefaRequest request){
         Tarefa tarefaSalva = tarefaService.criarTarefa(request);
 
-        URI location = URI.create(String.format("/tarefas/" + tarefaSalva.getId()));
-        return ResponseEntity.created(location).body(tarefaSalva);
+        TarefaResponse tarefaResponse = new TarefaResponse(
+                tarefaSalva.getId(),
+                tarefaSalva.getTitulo(),
+                tarefaSalva.getDescricao(),
+                tarefaSalva.getStatus(),
+                tarefaSalva.getPrioridade(),
+                tarefaSalva.getCriadoEm(),
+                tarefaSalva.getAtualizadoEm(),
+                tarefaSalva.getProjeto().getId()
+        );
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(tarefaResponse.id()).toUri();
+        return ResponseEntity.created(location).body(tarefaResponse);
     }
 
     @GetMapping
-    public ResponseEntity<List<Tarefa>> listarTarefas(@RequestParam Long projetoId){
+    public ResponseEntity<List<TarefaResponse>> listarTarefas(@RequestParam Long projetoId){
         List<Tarefa> tarefas = tarefaService.listarPorProjeto(projetoId);
-        return ResponseEntity.ok(tarefas);
+
+        List<TarefaResponse> tarefaResponse = tarefas.stream()
+                .map(tarefa -> new TarefaResponse(tarefa.getId(),
+                        tarefa.getTitulo(),
+                        tarefa.getDescricao(),
+                        tarefa.getStatus(),
+                        tarefa.getPrioridade(),
+                        tarefa.getCriadoEm(),
+                        tarefa.getAtualizadoEm(),
+                        tarefa.getProjeto().getId()
+                        ))
+                .toList();
+
+        return ResponseEntity.ok(tarefaResponse);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Tarefa> atualizarTarefa(@PathVariable Long id, @Valid @RequestBody AtualizarTarefaRequest request){
+    public ResponseEntity<TarefaResponse> atualizarTarefa(@PathVariable Long id, @Valid @RequestBody AtualizarTarefaRequest request){
         Tarefa tarefaAtualizada = tarefaService.atualizarTarefa(id, request);
-        return ResponseEntity.ok(tarefaAtualizada);
+
+        TarefaResponse tarefaResponse = new TarefaResponse(
+                tarefaAtualizada.getId(),
+                tarefaAtualizada.getTitulo(),
+                tarefaAtualizada.getDescricao(),
+                tarefaAtualizada.getStatus(),
+                tarefaAtualizada.getPrioridade(),
+                tarefaAtualizada.getCriadoEm(),
+                tarefaAtualizada.getAtualizadoEm(),
+                tarefaAtualizada.getProjeto().getId()
+        );
+
+        return ResponseEntity.ok(tarefaResponse);
     }
 
     @DeleteMapping("/{id}")
@@ -50,10 +89,23 @@ public class TarefaController {
     }
 
     @GetMapping("/pesquisar")
-    public ResponseEntity<List<Tarefa>> pesquisarTarefas(
+    public ResponseEntity<List<TarefaResponse>> pesquisarTarefas(
             @RequestParam Long projetoId,
             @RequestParam String termo ){
         List<Tarefa> tarefasEncontradas = tarefaService.pesquisar(projetoId, termo);
-        return ResponseEntity.ok(tarefasEncontradas);
+
+        List<TarefaResponse> tarefaResponse = tarefasEncontradas.stream()
+                .map(tarefa -> new TarefaResponse(tarefa.getId(),
+                        tarefa.getTitulo(),
+                        tarefa.getDescricao(),
+                        tarefa.getStatus(),
+                        tarefa.getPrioridade(),
+                        tarefa.getCriadoEm(),
+                        tarefa.getAtualizadoEm(),
+                        tarefa.getProjeto().getId()
+                ))
+                .toList();
+
+        return ResponseEntity.ok(tarefaResponse);
     }
 }

@@ -36,16 +36,16 @@ public class TarefaService {
                 .orElseThrow(() -> new EntityNotFoundException("Projeto com o ID " + dto.projetoId() + " não existe."));
 
         if (!projeto.isAtivo()){
-            throw new IllegalArgumentException("Não é possível adicionar tarefas a um projeto inativo.");
+            throw new BusinessRuleException("Não é possível adicionar tarefas a um projeto inativo.");
         }
 
-        Tarefa novaTarefa = new Tarefa();
-
-        novaTarefa.setProjeto(projeto);
-        novaTarefa.setTitulo(dto.titulo());
-        novaTarefa.setDescricao(dto.descricao());
-        novaTarefa.setStatus(Status.TODO);
-        novaTarefa.setPrioridade(dto.prioridade() != null ? dto.prioridade() : Prioridade.BAIXA);
+        Tarefa novaTarefa = Tarefa.builder()
+                .projeto(projeto)
+                .titulo(dto.titulo())
+                .descricao(dto.descricao())
+                .status(Status.TODO)
+                .prioridade(dto.prioridade() != null ? dto.prioridade() : Prioridade.BAIXA)
+                .build();
 
         return tarefaRepository.save(novaTarefa);
     }

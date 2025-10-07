@@ -20,20 +20,16 @@ public interface TarefaRepository extends JpaRepository<Tarefa,Long> {
             @Param("status") Status status
     );
 
-    @Query(
-            "SELECT t FROM Tarefa t WHERE t.projeto.id = :projetoId AND t.status !='ARCHIVED' AND "+
+    @Query("SELECT t FROM Tarefa t WHERE t.projeto.id = :projetoId AND t.status !='ARCHIVED' AND "+
             "(LOWER(t.titulo) LIKE LOWER(CONCAT('%', :termo, '%')) OR "+
             "LOWER(t.descricao) LIKE LOWER(CONCAT('%', :termo, '%')))"+
-            "ORDER BY t.atualizadoEm DESC"
-    )
+            "ORDER BY t.atualizadoEm DESC")
     List<Tarefa> searchByTermInProject(
             @Param("projetoId")Long projetoId,
             @Param("termo")String termo
     );
 
-    @Query(
-            "SELECT t FROM Tarefa t WHERE t.projeto.id = :projetoId AND t.status = :status"
-    )
+    @Query("SELECT t FROM Tarefa t WHERE t.projeto.id = :projetoId AND t.status = :status")
     List<Tarefa> findByProjectIdAndStatus(
             @Param("projetoId") Long projetoId,
             @Param("status") Status status
