@@ -44,12 +44,16 @@ API RESTful completa desenvolvida em Java com Spring Boot para gerenciamento de 
 
 ## 📝 Endpoints da API
 
-* `POST /projetos` - Cria um novo projeto.
-* `GET /projetos` - Lista todos os projetos.
-* `POST /tarefas` - Cria uma nova tarefa.
-* `PUT /tarefas/{id}` - Atualiza uma tarefa existente.
-* `GET /metricas/lead-time?projetoId={id}` - Calcula o Lead Time médio do projeto.
+| Método | Endpoint                    | Descrição                                                   |
+| :----- | :-------------------------- | :---------------------------------------------------------- |
+| `POST` | `/projetos`                 | Cria um novo projeto.                                       |
+| `GET`  | `/projetos`                 | Lista todos os projetos existentes.                         |
+| `POST` | `/tarefas`                  | Cria uma nova tarefa em um projeto.                         |
+| `GET`  | `/tarefas`                  | Lista tarefas ativas de um projeto (`?projetoId=X`).        |
+| `PUT`  | `/tarefas/{id}`             | Atualiza uma tarefa existente.                              |
+| `DELETE`| `/tarefas/{id}`             | Arquiva uma tarefa (muda status para `ARCHIVED`).           |
+| `GET`  | `/tarefas/pesquisar`        | Pesquisa tarefas por termo (`?projetoId=X&termo=Y`).        |
+| `GET`  | `/metricas/lead-time`       | Calcula o Lead Time médio de um projeto (`?projetoId=X`).   |
 
 ---
-
 
