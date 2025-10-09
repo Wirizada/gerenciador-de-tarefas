@@ -51,7 +51,7 @@ public class TarefaServiceTest {
     }
 
     @Test
-    void deveAtualizarTarefaStatusDaTarefaparaDoneQuandoHouverDescricao() {
+    void deveAtualizarTarefaStatusDaTarefaParaDoneQuandoHouverDescricao() {
 
         Long idTarefa = 1L;
         AtualizarTarefaRequest atualizarTarefaRequest = new AtualizarTarefaRequest(null, null, Status.DONE, null);
