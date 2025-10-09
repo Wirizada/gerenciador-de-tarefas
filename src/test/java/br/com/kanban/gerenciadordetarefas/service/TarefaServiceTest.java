@@ -1,4 +1,4 @@
-package br.com.kanban.gerenciadordetarefas;
+package br.com.kanban.gerenciadordetarefas.service;
 
 import br.com.kanban.gerenciadordetarefas.dto.AtualizarTarefaRequest;
 import br.com.kanban.gerenciadordetarefas.exception.BusinessRuleException;
@@ -6,7 +6,6 @@ import br.com.kanban.gerenciadordetarefas.model.Tarefa;
 import br.com.kanban.gerenciadordetarefas.model.enums.Status;
 import br.com.kanban.gerenciadordetarefas.repository.ProjetoRepository;
 import br.com.kanban.gerenciadordetarefas.repository.TarefaRepository;
-import br.com.kanban.gerenciadordetarefas.service.TarefaService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
